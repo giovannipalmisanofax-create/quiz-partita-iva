@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Che Tipo di Partita IVA Sei?</title>
+    <style>
+        :root {
+            --color-bg: #000000;
+            --color-surface: #1a1a1a;
+            --color-text: #ffffff;
+            --color-text-secondary: #cccccc;
+            --color-primary: #ffc000;
+            --color-primary-hover: #ffcd33;
+            --color-secondary: rgba(255, 192, 0, 0.1);
+            --color-border: rgba(255, 192, 0, 0.3);
+            --color-success: #ffc000;
+            --color-warning: #ffc000;
+            --color-error: #ff4444;
+            --radius-base: 8px;
+            --radius-lg: 12px;
+            --space-16: 16px;
+            --space-24: 24px;
+            --space-32: 32px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-bg: #000000;
+                --color-surface: #1a1a1a;
+                --color-text: #ffffff;
+                --color-text-secondary: #cccccc;
+                --color-primary: #ffc000;
+                --color-primary-hover: #ffcd33;
+                --color-secondary: rgba(255, 192, 0, 0.1);
+                --color-border: rgba(255, 192, 0, 0.3);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: var(--space-24);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .card {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            padding: var(--space-32);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: var(--space-32);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--color-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            color: var(--color-text-secondary);
+            font-size: 14px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--color-secondary);
+            border-radius: 3px;
+            margin-bottom: var(--space-24);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--color-primary);
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .question-section {
+            margin-bottom: var(--space-24);
+        }
+
+        .question-number {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: var(--space-24);
+            color: var(--color-text);
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            background: var(--color-surface);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-base);
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .option:hover {
+            border-color: var(--color-primary);
+            background: var(--color-secondary);
+        }
+
+        .option.selected {
+            border-color: var(--color-primary);
+            background: rgba(33, 128, 141, 0.1);
+        }
+
+        .option-letter {
+            font-weight: 700;
+            color: var(--color-primary);
+            font-size: 16px;
+            min-width: 24px;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px 24px;
+            background: var(--color-primary);
+            color: #000000;
+            border: none;
+            border-radius: var(--radius-base);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            background: var(--color-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 192, 0, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .results {
+            text-align: center;
+        }
+
+        .result-icon {
+            font-size: 64px;
+            margin-bottom: var(--space-16);
+        }
+
+        .result-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .result-subtitle {
+            font-size: 16px;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-24);
+        }
+
+        .result-description {
+            background: var(--color-secondary);
+            padding: var(--space-16);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--space-16);
+            text-align: left;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .result-tip {
+            background: rgba(33, 128, 141, 0.1);
+            border-left: 4px solid var(--color-primary);
+            padding: var(--space-16);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--space-24);
+            text-align: left;
+        }
+
+        .tip-label {
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .tip-text {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .score-breakdown {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: var(--space-24);
+            font-size: 14px;
+        }
+
+        .score-item {
+            padding: 8px 16px;
+            background: var(--color-secondary);
+            border-radius: var(--radius-base);
+        }
+
+        .score-letter {
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .footer {
+            margin-top: var(--space-24);
+            text-align: center;
+            font-size: 12px;
+            color: var(--color-text-secondary);
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: var(--space-16);
+            }
+
+            .card {
+                padding: var(--space-24);
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .question-text {
+                font-size: 16px;
+            }
+
+            .result-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <h1>🎯 Che Tipo di Partita IVA Sei?</h1>
+                <p>Scopri il tuo profilo fiscale in 10 domande</p>
+            </div>
+
+            <div id="quiz-section">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress"></div>
+                </div>
+
+                <div class="question-section">
+                    <div class="question-number" id="question-number">Domanda 1 di 4</div>
+                    <div class="question-text" id="question-text"></div>
+                </div>
+
+                <div class="options" id="options"></div>
+
+                <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Avanti</button>
+            </div>
+
+            <div id="results-section" class="hidden results">
+                <div class="result-icon" id="result-icon"></div>
+                <div class="result-title" id="result-title"></div>
+                <div class="result-subtitle" id="result-subtitle"></div>
+                
+                <div class="score-breakdown" id="score-breakdown"></div>
+                
+                <div class="result-description" id="result-description"></div>
+                
+                <div class="result-tip">
+                    <div class="tip-label">💡 Consiglio Pratico</div>
+                    <div class="tip-text" id="result-tip"></div>
+                </div>
+
+                <button class="btn" onclick="restartQuiz()">Ricomincia il Quiz</button>
+            </div>
+
+            <div class="footer">
+                Creato da <strong>Studio Catucci</strong> – Consulenza fiscale semplice e chiara
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quizData = {
+            questions: [
+                {
+                    question: "Quando pensi alle scadenze fiscali...",
+                    options: [
+                        { letter: "A", text: "Mi salgono i brividi, spesso le dimentico o le scopro all'ultimo 🥶" },
+                        { letter: "B", text: "Ho un calendario, ma a volte me ne sfugge qualcuna 📅" },
+                        { letter: "C", text: "Le tengo sotto controllo con promemoria e il supporto di un professionista ✅" }
+                    ]
+                },
+                {
+                    question: "Come gestisci le fatture elettroniche?",
+                    options: [
+                        { letter: "A", text: "Le faccio quando mi ricordo, spesso in ritardo o in fretta 😅" },
+                        { letter: "B", text: "Cerco di farle settimanalmente, ma non sempre ci riesco 🔄" },
+                        { letter: "C", text: "Ho un sistema: le emetto subito o in una giornata fissa della settimana 📋" }
+                    ]
+                },
+                {
+                    question: "I tuoi contributi INPS/cassa professionale...",
+                    options: [
+                        { letter: "A", text: "Sono sempre una sorpresa (e mai piacevole) 😰" },
+                        { letter: "B", text: "So più o meno quanto sono, ma non li accantono regolarmente 🤷" },
+                        { letter: "C", text: "Li accantono ogni mese in un conto separato o li pago a rate pianificate 💰" }
+                    ]
+                },
+                {
+                    question: "Quando ricevi una comunicazione dall'Agenzia delle Entrate...",
+                    options: [
+                        { letter: "A", text: "Panico totale, la apro giorni dopo (se la apro) 😱" },
+                        { letter: "B", text: "La leggo, ma non sempre capisco cosa fare e rimando 📨" },
+                        { letter: "C", text: "La controllo subito e la giro al commercialista se serve 👍" }
+                    ]
+                },
+                {
+                    question: "Il tuo rapporto con il commercialista è...",
+                    options: [
+                        { letter: "A", text: "Lo sento solo quando scatta l'emergenza o alle scadenze più grosse 🆘" },
+                        { letter: "B", text: "Ci sentiamo periodicamente, ma potrei coinvolgerlo di più 📞" },
+                        { letter: "C", text: "Abbiamo chiamate programmate e lui conosce bene la mia situazione 🤝" }
+                    ]
+                },
+                {
+                    question: "Come archivi ricevute, fatture e documenti fiscali?",
+                    options: [
+                        { letter: "A", text: "Sono sparsi tra email, cassetti e app varie... il caos totale 📦" },
+                        { letter: "B", text: "Ho una cartella, ma non è sempre aggiornata o ben organizzata 📂" },
+                        { letter: "C", text: "Sistema digitale ordinato per mese/categoria o tutto al commercialista 🗂️" }
+                    ]
+                },
+                {
+                    question: "Quando devi fare un investimento per la tua attività (es. PC, formazione)...",
+                    options: [
+                        { letter: "A", text: "Lo faccio e basta, poi vedo se posso dedurlo 🛒" },
+                        { letter: "B", text: "So che serve la fattura, ma non sempre chiedo info prima 💭" },
+                        { letter: "C", text: "Prima verifico deducibilità, modalità di pagamento e se conviene farlo ora 💡" }
+                    ]
+                },
+                {
+                    question: "Sai quanto fatturato hai fatto fino ad oggi quest'anno?",
+                    options: [
+                        { letter: "A", text: "Non lo so con precisione, dovrei fare i conti 🤔" },
+                        { letter: "B", text: "Ho un'idea approssimativa, più o meno ci sono 📊" },
+                        { letter: "C", text: "Lo so sempre, tengo un file o dashboard aggiornata 📈" }
+                    ]
+                },
+                {
+                    question: "Come ti prepari al pagamento delle tasse?",
+                    options: [
+                        { letter: "A", text: "Arrivo impreparato e spesso devo chiedere prestiti o dilazioni 😓" },
+                        { letter: "B", text: "Metto da parte qualcosa, ma non sempre basta 💸" },
+                        { letter: "C", text: "Accantono regolarmente una % fissa su conto dedicato o seguo un piano 🎯" }
+                    ]
+                },
+                {
+                    question: "Conosci i vantaggi (e i limiti) del tuo regime fiscale attuale?",
+                    options: [
+                        { letter: "A", text: "Sono in regime forfettario perché me l'hanno detto, ma non so bene perché 🤷‍♂️" },
+                        { letter: "B", text: "Conosco le basi, ma non so se è ancora il più conveniente per me 🧐" },
+                        { letter: "C", text: "Faccio verifiche periodiche con il commercialista per ottimizzare la mia posizione 🔍" }
+                    ]
+                }
+            ],
+            profiles: {
+                A: {
+                    icon: "🌪️",
+                    title: "Imprenditore in Modalità Sopravvivenza",
+                    subtitle: "Il fisco ti mette in agitazione, ma c'è una via d'uscita",
+                    description: "Gestire la Partita IVA ti crea tensione perché non hai ancora trovato un metodo chiaro. Le scadenze ti prendono alla sprovvista e spesso ti ritrovi a correre dietro agli adempimenti. Non sei disorganizzato per scelta: semplicemente nessuno ti ha mai spiegato come fare in modo semplice. La buona notizia? Con pochi cambiamenti pratici puoi trasformare il caos in controllo.",
+                    tip: "Inizia oggi stesso con questi 3 step: 1) Imposta 3 promemoria fissi al mese (fatture, scadenze, verifica entrate/uscite). 2) Apri un conto corrente dedicato solo alla Partita IVA. 3) Prenota una call con uno Studio che ti spieghi tutto in modo chiaro (come Studio Catucci). La tua serenità mentale vale infinitamente di più del costo di una consulenza professionale."
+                },
+                B: {
+                    icon: "⚖️",
+                    title: "Imprenditore in Equilibrio Instabile",
+                    subtitle: "Sei organizzato, ma puoi fare il salto di qualità",
+                    description: "Hai capito l'importanza di tenere sotto controllo la gestione fiscale, ma a volte ti manca costanza o un metodo consolidato. Alterni momenti di grande attenzione ad altri in cui lasci scorrere. Sei sulla buona strada: quello che ti serve ora è automatizzare le buone abitudini e ridurre lo stress mentale inutile.",
+                    tip: "Trasforma le buone intenzioni in sistema vincente: blocca 1 ora fissa a settimana nel calendario etichettata 'Admin Fiscale' (fatture + controllo documenti + check scadenze). Usa strumenti digitali (app di gestione, promemoria smart, dashboard condivise con il commercialista) per non dover ricordare tutto a memoria. Il segreto non è lavorare di più, ma lavorare con metodo."
+                },
+                C: {
+                    icon: "🎖️",
+                    title: "Imprenditore Strategico",
+                    subtitle: "Gestisci la Partita IVA come un vero CEO",
+                    description: "Hai capito che il fisco non è un nemico da evitare, ma semplicemente una componente del business da gestire con metodo e intelligenza. Hai sistemi chiari, scadenze monitorate, e probabilmente un ottimo rapporto di collaborazione con il tuo commercialista. Le sorprese fiscali sono ridotte al minimo e dormi sonni tranquilli. Complimenti: fai parte di quella minoranza che ha trasformato la burocrazia in opportunità.",
+                    tip: "Sei già a un livello eccellente! Ora concentrati sull'ottimizzazione avanzata: verifica con il tuo commercialista se stai sfruttando tutte le deduzioni/detrazioni possibili per la tua situazione specifica. Valuta se il regime fiscale attuale è ancora il più conveniente (le cose cambiano anno dopo anno). Considera di fare pianificazione fiscale annuale: non solo adempimenti, ma vera strategia per massimizzare utili e minimizzare tasse in modo legale e intelligente."
+                }
+            }
+        };
+
+        let currentQuestion = 0;
+        let answers = { A: 0, B: 0, C: 0 };
+        let selectedOption = null;
+
+        function loadQuestion() {
+            const question = quizData.questions[currentQuestion];
+            const progress = ((currentQuestion + 1) / quizData.questions.length) * 100;
+            
+            document.getElementById('progress').style.width = progress + '%';
+            document.getElementById('question-number').textContent = `Domanda ${currentQuestion + 1} di ${quizData.questions.length}`;
+            document.getElementById('question-text').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.onclick = () => selectOption(option.letter, optionDiv);
+                optionDiv.innerHTML = `
+                    <span class="option-letter">${option.letter})</span>
+                    <span class="option-text">${option.text}</span>
+                `;
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            selectedOption = null;
+            document.getElementById('next-btn').disabled = true;
+        }
+
+        function selectOption(letter, element) {
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedOption = letter;
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (!selectedOption) return;
+            
+            answers[selectedOption]++;
+            currentQuestion++;
+            
+            if (currentQuestion < quizData.questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            const maxScore = Math.max(answers.A, answers.B, answers.C);
+            let profileType;
+            
+            if (answers.A === maxScore) profileType = 'A';
+            else if (answers.C === maxScore) profileType = 'C';
+            else profileType = 'B';
+            
+            const profile = quizData.profiles[profileType];
+            
+            document.getElementById('quiz-section').classList.add('hidden');
+            document.getElementById('results-section').classList.remove('hidden');
+            
+            document.getElementById('result-icon').textContent = profile.icon;
+            document.getElementById('result-title').textContent = profile.title;
+            document.getElementById('result-subtitle').textContent = profile.subtitle;
+            document.getElementById('result-description').textContent = profile.description;
+            document.getElementById('result-tip').textContent = profile.tip;
+            
+            const scoreBreakdown = document.getElementById('score-breakdown');
+            scoreBreakdown.innerHTML = `
+                <div class="score-item"><span class="score-letter">A:</span> ${answers.A}</div>
+                <div class="score-item"><span class="score-letter">B:</span> ${answers.B}</div>
+                <div class="score-item"><span class="score-letter">C:</span> ${answers.C}</div>
+            `;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            answers = { A: 0, B: 0, C: 0 };
+            selectedOption = null;
+            
+            document.getElementById('quiz-section').classList.remove('hidden');
+            document.getElementById('results-section').classList.add('hidden');
+            
+            loadQuestion();
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
